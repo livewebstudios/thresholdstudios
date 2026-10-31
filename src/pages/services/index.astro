@@ -5,7 +5,6 @@ import PhotoFrame from '../../components/kit/PhotoFrame.astro';
 import Button from '../../components/kit/Button.astro';
 import Knob from '../../components/kit/Knob.astro';
 import Hairline from '../../components/kit/Hairline.astro';
-import Breadcrumbs from '../../components/kit/Breadcrumbs.astro';
 import CTABand from '../../components/kit/CTABand.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import ServiceFilter from '../../components/islands/ServiceFilter';
@@ -29,7 +28,6 @@ import { webPage, breadcrumbs, serviceList } from '../../lib/schema';
   <section class="phero" data-hero aria-labelledby="svc-h1">
     <div class="container phero__grid">
       <div class="phero__text">
-        <Breadcrumbs items={[{ label: 'HOME', href: '/' }, { label: 'SERVICES' }]} />
         <h1 id="svc-h1" data-hero-line>{pg.hero.title}</h1>
         <p class="lead" data-hero-in>{pg.hero.sub}</p>
         <div class="btn-row" data-hero-in>

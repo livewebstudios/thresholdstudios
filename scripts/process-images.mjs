@@ -108,15 +108,24 @@ for (let i = 0; i < data.length; i += 4) {
   data[i] = cream[0]; data[i + 1] = cream[1]; data[i + 2] = cream[2];
   data[i + 3] = Math.round(data[i + 3] * Math.min(1, Math.max(0, (lum - 0.08) / 0.84)));
 }
-await sharp(data, { raw: info }).png({ compressionLevel: 9 }).toFile(resolve(PUB, 'logoRGB.png'));
-console.log('logoRGB.png 540x540 (cream on transparent)');
+// Recolor at 540, then ship at 272 (2x the 136px footer logo) as a palette PNG: it is one color plus alpha,
+// and at 80px on phones it is the LCP element, so bytes matter.
+await sharp(await sharp(data, { raw: info }).png().toBuffer()).resize(272, 272, { kernel: 'lanczos3' }).png({ palette: true, colours: 64, compressionLevel: 9, effort: 10 }).toFile(resolve(PUB, 'logoRGB.png'));
+console.log('logoRGB.png 272x272 (cream on transparent, palette)');
 
 const fav = resolve(IMG, 'logo', 'logo-1.png');
 const favDir = resolve(BUILD, 'public');
-for (const [size, name] of [[32, 'favicon-32.png'], [180, 'apple-touch-icon.png'], [192, 'icon-192.png'], [512, 'icon-512.png']]) {
-  await sharp(fav).resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toFile(resolve(favDir, name));
+// Large icons: the full badge, trimmed edge to edge (the source has a 12px side margin).
+const badge = await sharp(fav).trim({ threshold: 10 }).toBuffer();
+for (const [size, name] of [[180, 'apple-touch-icon.png'], [192, 'icon-192.png'], [512, 'icon-512.png']]) {
+  await sharp(badge).resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toFile(resolve(favDir, name));
 }
-const fav64 = (await sharp(fav).resize(64, 64, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer()).toString('base64');
+// Tab icons (Jon, 26_10_31: "larger in the tab"): at 16px the ring lettering is mush, so the tab shows the
+// badge's center emblem (black disc, skyline, NYC) full bleed. Disc measured at center (108, 97), radius 47.
+const disc = (size) => sharp(fav).extract({ left: 59, top: 48, width: 98, height: 98 }).resize(size, size, { kernel: 'lanczos3' })
+  .composite([{ input: Buffer.from(`<svg width="${size}" height="${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}"/></svg>`), blend: 'dest-in' }]).png();
+await (await disc(32)).toFile(resolve(favDir, 'favicon-32.png'));
+const fav64 = (await (await disc(64)).toBuffer()).toString('base64');
 await writeFile(resolve(favDir, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><image width="64" height="64" xlink:href="data:image/png;base64,${fav64}"/></svg>\n`);
 console.log('favicons 32, 180, 192, 512, svg');
 

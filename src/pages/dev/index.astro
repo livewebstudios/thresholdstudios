@@ -10,7 +10,6 @@ import Fader from '../../components/kit/Fader.astro';
 import Hairline from '../../components/kit/Hairline.astro';
 import Readout from '../../components/kit/Readout.astro';
 import BlockMap from '../../components/kit/BlockMap.astro';
-import Breadcrumbs from '../../components/kit/Breadcrumbs.astro';
 import VUMeter from '../../components/kit/VUMeter';
 import VUMeters from '../../components/islands/VUMeters';
 import ServiceFilter from '../../components/islands/ServiceFilter';
@@ -24,7 +23,6 @@ const swatches = Object.entries(palette);
 <Base title={devPage.seo.title} description={devPage.seo.description} path="/dev/" og="home">
   <section class="dev-hero" data-hero aria-labelledby="dev-h1">
     <div class="container">
-      <Breadcrumbs items={[{ label: 'HOME', href: '/' }, { label: 'DEV' }]} />
       <h1 id="dev-h1" data-hero-line>{devPage.title}</h1>
       <p class="lead" data-hero-in>{devPage.intro}</p>
     </div>

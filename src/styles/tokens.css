@@ -48,6 +48,8 @@
   --font-display: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Logo wordmark (Jon, 26_10_31: Memphis Bold). Arvo Bold is the free geometric-slab stand-in. */
+  --font-wordmark: 'Arvo', Rockwell, 'Roboto Slab', serif;
 
   --fw-display: 300;
   --tracking-display: -0.02em;
@@ -121,9 +123,9 @@
   --z-toast: 80;
   --z-dialog: 90;
 
-  --nav-h: 4.5rem;
-  --logo-hang: 0rem; /* how far the desktop logo medallion hangs below the nav bar */
+  --nav-h: 5rem; /* 72px logo plus 4px each side */
+  --logo-hang: 0rem; /* logo overhang below the bar; 0 since the logo sits centered inside the bar (26_10_31) */
 }
 @media (min-width: 1024px) {
-  :root { --logo-hang: 1.5rem; }
+  :root { --nav-h: 8rem; } /* 112px logo plus 8px each side */
 }

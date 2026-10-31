@@ -116,9 +116,12 @@ The project-root `DECISIONS.md` is the full log. Where it disagrees with the ori
 - **Hero pause button:** 44px icon-only, bottom-right of the hero (WCAG 2.2.2). Pauses the video,
   readout marquee, LEDs and block-map glow, and remembers it for the session. Hidden under reduced
   motion.
-- **Logo medallion:** `images/logoRGB.png`, 88px on desktop hanging below the 72px nav bar, 64px
-  inside the bar on mobile. The `--logo-hang` token (0 on mobile, 1.5rem at 1024+) feeds every
-  hero top padding, `scroll-padding-top` and anchor offset so the overhang never covers a heading.
+- **Logo and wordmark:** `images/logoRGB.png` centered with the "THRESHOLD / RECORDING STUDIOS NYC"
+  wordmark: 112px in a 128px bar on desktop, 72px in an 80px bar on phones, 136px in the footer.
+  The wordmark uses `--font-wordmark`: Arvo Bold standing in for Memphis Bold until a licensed
+  Memphis webfont is added (see DECISIONS.md). Keep the wordmark one text block: on phones it is the
+  LCP element, and if the logo outgrows it Lighthouse drops to about 90.
+- **No breadcrumbs** (removed 26_10_31). BreadcrumbList JSON-LD is kept.
 - **No demo banner.** Removed at Jon's request. Pages stay `noindex`.
 - **Knob bullets:** turn 135 degrees on hover, ticks light in sequence.
 - **Services preview (Home):** horizontal hairline cards, photo left, two columns from 768px.

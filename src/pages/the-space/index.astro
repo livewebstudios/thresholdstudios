@@ -7,7 +7,6 @@ import Button from '../../components/kit/Button.astro';
 import Knob from '../../components/kit/Knob.astro';
 import LED from '../../components/kit/LED.astro';
 import Hairline from '../../components/kit/Hairline.astro';
-import Breadcrumbs from '../../components/kit/Breadcrumbs.astro';
 import BlockMap from '../../components/kit/BlockMap.astro';
 import CTABand from '../../components/kit/CTABand.astro';
 import Lightbox from '../../components/islands/Lightbox';
@@ -40,7 +39,6 @@ const roomData = pg.rooms.map((r) => ({ ...r, room: rooms.find((x) => x.key === 
 >
   <section class="shero" data-hero aria-labelledby="space-h1">
     <div class="container shero__text">
-      <Breadcrumbs items={[{ label: 'HOME', href: '/' }, { label: 'THE SPACE' }]} />
       <p class="eyebrow mono"><LED /> <span>{pg.hero.eyebrow}</span></p>
       <h1 id="space-h1" data-hero-line>{pg.hero.title}</h1>
       <p class="lead" data-hero-in>{pg.hero.sub}</p>
