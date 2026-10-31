@@ -1,0 +1,139 @@
+---
+import Base from '../../layouts/Base.astro';
+import Panel from '../../components/kit/Panel.astro';
+import PhotoFrame from '../../components/kit/PhotoFrame.astro';
+import Button from '../../components/kit/Button.astro';
+import Knob from '../../components/kit/Knob.astro';
+import Hairline from '../../components/kit/Hairline.astro';
+import Breadcrumbs from '../../components/kit/Breadcrumbs.astro';
+import CTABand from '../../components/kit/CTABand.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import ServiceFilter from '../../components/islands/ServiceFilter';
+import { servicesPage as pg } from '../../data/pages/services';
+import { services, groups } from '../../data/services';
+import { gear } from '../../data/gear';
+import { site } from '../../data/site';
+import { webPage, breadcrumbs, serviceList } from '../../lib/schema';
+---
+<Base
+  title={pg.seo.title}
+  description={pg.seo.description}
+  path="/services/"
+  og="services"
+  schema={[
+    webPage('/services/', pg.seo.title, pg.seo.description),
+    breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Services', path: '/services/' }]),
+    ...serviceList(),
+  ]}
+>
+  <section class="phero" data-hero aria-labelledby="svc-h1">
+    <div class="container phero__grid">
+      <div class="phero__text">
+        <Breadcrumbs items={[{ label: 'HOME', href: '/' }, { label: 'SERVICES' }]} />
+        <h1 id="svc-h1" data-hero-line>{pg.hero.title}</h1>
+        <p class="lead" data-hero-in>{pg.hero.sub}</p>
+        <div class="btn-row" data-hero-in>
+          <Button href={site.phoneHref}>CALL {site.phone}</Button>
+        </div>
+      </div>
+      <div data-hero-in>
+        <PhotoFrame photoKey={pg.hero.frame.key} caption={pg.hero.frame.caption} ratio="16/9" priority sizes="(min-width: 1024px) 55vw, 100vw" screws parallax={false} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section svc" aria-labelledby="svc-list-title">
+    <div class="container">
+      <h2 id="svc-list-title" class="visually-hidden">{pg.cardsTitle}</h2>
+      <ServiceFilter client:visible groups={groups} label={pg.filterLabel}>
+        <span id="filter-music" class="sfilter-target"></span>
+        <span id="filter-voice" class="sfilter-target"></span>
+        <span id="filter-location" class="sfilter-target"></span>
+        <span id="filter-learn" class="sfilter-target"></span>
+        <span id="filter-all" class="sfilter-target"></span>
+        <ul role="list" class="services-grid">
+          {services.map((s) => <ServiceCard service={s} />)}
+        </ul>
+      </ServiceFilter>
+    </div>
+  </section>
+
+  <section class="section section--charcoal gear" aria-labelledby="gear-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">{pg.gear.plate}</span>
+        <h2 id="gear-title">{pg.gear.title}</h2>
+      </div>
+      <Panel variant="walnut" class="gear__panel" data-reveal>
+        {gear.map((col) => (
+          <div class="gear__col">
+            <h3 class="mono gear__head">{col.title}</h3>
+            <ul role="list" class="mono mono--sm gear__list">
+              {col.items.map((it) => <li>{it}</li>)}
+            </ul>
+          </div>
+        ))}
+      </Panel>
+      <p class="gear__note" data-reveal>{pg.gear.note}</p>
+    </div>
+  </section>
+
+  <section class="section booking" aria-labelledby="book-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">BOOKING</span>
+        <h2 id="book-title">{pg.booking.title}</h2>
+      </div>
+      <ol role="list" class="booking__steps">
+        {pg.booking.steps.map((st, i) => (
+          <li class="booking__step knob-row" data-reveal>
+            <div class="booking__top"><Knob size={56} /><span class="mono booking__n">STEP {String(i + 1).padStart(2, '0')}</span></div>
+            <h3>{st.title}</h3>
+            <p>{st.body}</p>
+          </li>
+        ))}
+      </ol>
+      <Hairline />
+      <p class="mono booking__policy" data-reveal>{site.policies.mono}</p>
+    </div>
+  </section>
+
+  <CTABand title="Let's make something legendary." />
+</Base>
+
+<style>
+  .phero { padding-top: calc(var(--nav-h) + var(--logo-hang) + var(--s-12)); padding-bottom: var(--s-8); }
+  .phero__grid { display: grid; gap: var(--s-10); align-items: end; }
+  .phero__text { display: grid; gap: var(--s-5); justify-items: start; }
+  @media (min-width: 1024px) { .phero__grid { grid-template-columns: 0.9fr 1.1fr; gap: var(--s-16); } }
+
+  .svc :global(.sfilter) { display: grid; gap: var(--s-10); }
+  .services-grid { display: grid; gap: var(--s-8) var(--s-6); grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+
+  .gear :global(.gear__panel) {
+    display: grid;
+    gap: var(--s-8);
+    padding: clamp(2rem, 1.5rem + 2.5vw, 3.5rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 540px) { .gear :global(.gear__panel) { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .gear :global(.gear__panel) { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1200px) { .gear :global(.gear__panel) { grid-template-columns: repeat(5, 1fr); gap: var(--s-6); } }
+  .gear__head { color: var(--th-brass); font-weight: 500; padding-bottom: var(--s-3); margin-bottom: var(--s-3); border-bottom: 1px solid var(--th-hairline); }
+  .gear__list { display: grid; gap: 0.5rem; color: var(--th-parchment); letter-spacing: 0.08em; }
+  .gear__list li { padding-left: 1rem; position: relative; }
+  .gear__list li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 4px; height: 4px; border-radius: 50%; background: var(--th-steel); }
+  .gear__note { margin-top: var(--s-6); color: var(--th-parchment); }
+
+  .booking__steps { display: grid; gap: var(--s-6); margin-bottom: var(--s-10); }
+  @media (min-width: 720px) { .booking__steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .booking__steps { grid-template-columns: repeat(4, 1fr); } }
+  .booking__step { display: grid; gap: var(--s-3); align-content: start; }
+  .booking__top { display: flex; align-items: center; gap: var(--s-4); }
+  .booking__n { color: var(--th-brass); }
+  .booking__step h3 { font-size: 1.5rem; }
+  .booking__step p { color: var(--th-parchment); font-size: 1rem; }
+  .booking__policy { margin-top: var(--s-6); color: var(--th-parchment); }
+</style>

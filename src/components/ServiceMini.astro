@@ -1,0 +1,70 @@
+---
+// Service card for the home page preview, in the reference card style (Jon, 26_10_30): a dark hairline panel,
+// 4:3 thumbnail left with the number plate, brass caps name, one line, and a DETAILS cue with a circle arrow.
+import PhotoFrame from './kit/PhotoFrame.astro';
+import LineIcon from './kit/LineIcon.astro';
+import type { Service } from '../data/services';
+interface Props { service: Service }
+const { service: s } = Astro.props;
+---
+<li class="mini" data-reveal>
+  <a class="mini__link" href={`/services/#svc-${s.slug}`}>
+    <span class="mini__media">
+      <PhotoFrame photoKey={s.thumb} ratio="4/3" sizes="(min-width: 768px) 20vw, 40vw" parallax={false} class="mini__thumb" />
+      <span class="nameplate nameplate--num mini__num">{s.num}</span>
+    </span>
+    <span class="mini__body">
+      <h3 class="mini__name">{s.name}</h3>
+      <p class="mini__line">{s.line}</p>
+      <span class="mini__more mono" aria-hidden="true">DETAILS <span class="mini__arrow"><LineIcon name="arrow" size={14} /></span></span>
+    </span>
+  </a>
+</li>
+<style>
+  .mini { height: 100%; }
+  .mini__link {
+    display: grid;
+    grid-template-columns: minmax(7rem, 42%) 1fr;
+    align-items: center;
+    gap: var(--s-4);
+    height: 100%;
+    padding: var(--s-3);
+    text-decoration: none;
+    border-radius: var(--r-panel);
+    background: color-mix(in srgb, var(--th-charcoal) 82%, transparent);
+    border: 1px solid var(--th-hairline-soft);
+    box-shadow: inset 0 1px 0 var(--th-edge-light), var(--shadow-panel);
+    transition: transform var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease);
+  }
+  .mini__media { position: relative; display: block; }
+  .mini__link :global(.pf) { padding: 4px; box-shadow: var(--shadow-inset); }
+  .mini__num { position: absolute; top: var(--s-2); left: var(--s-2); z-index: 3; }
+  .mini__body { display: grid; gap: var(--s-2); align-content: center; }
+  .mini__name {
+    font-size: 0.9375rem;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--th-brass);
+    transition: color var(--t-hover) var(--ease);
+  }
+  .mini__line { font-size: 0.875rem; line-height: 1.45; color: var(--th-parchment); }
+  .mini__more {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    margin-top: var(--s-1);
+    font-size: var(--fs-mono-sm); letter-spacing: var(--tracking-mono); color: var(--th-cream);
+  }
+  .mini__arrow {
+    display: grid; place-items: center;
+    width: 24px; height: 24px; border-radius: var(--r-round);
+    background: var(--th-brass-face); color: var(--th-engrave);
+    transition: filter var(--t-hover) var(--ease), transform var(--t-hover) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .mini__link:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--th-brass) 60%, transparent); box-shadow: inset 0 1px 0 var(--th-edge-light), var(--shadow-panel-hover); }
+    .mini__link:hover .mini__num { filter: brightness(1.12); }
+    .mini__link:hover :global(.pf__img img) { filter: brightness(1.06); }
+    .mini__link:hover .mini__name { color: var(--th-brass-bright); }
+    .mini__link:hover .mini__arrow { filter: brightness(1.1); transform: translate(1px, -1px); }
+  }
+</style>

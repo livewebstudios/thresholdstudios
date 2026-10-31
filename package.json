@@ -1,0 +1,40 @@
+{
+  "name": "thresholdstudios-demo",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/og.mjs && astro build && node scripts/relativize.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "assets": "node scripts/process-images.mjs",
+    "video": "bash scripts/encode-video.sh",
+    "fetch": "node scripts/fetch-live.mjs",
+    "killlist": "node scripts/killlist-scan.mjs",
+    "contrast": "node scripts/contrast-check.mjs",
+    "qa": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.1.2",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.4.4",
+    "gsap": "^3.15.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "satori": "^0.63.2",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "lighthouse": "^13.6.0",
+    "playwright": "^1.64.1"
+  }
+}

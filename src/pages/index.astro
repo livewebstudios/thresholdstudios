@@ -1,0 +1,375 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Panel from '../components/kit/Panel.astro';
+import PhotoFrame from '../components/kit/PhotoFrame.astro';
+import Button from '../components/kit/Button.astro';
+import LED from '../components/kit/LED.astro';
+import Knob from '../components/kit/Knob.astro';
+import Hairline from '../components/kit/Hairline.astro';
+import Readout from '../components/kit/Readout.astro';
+import BlockMap from '../components/kit/BlockMap.astro';
+import CTABand from '../components/kit/CTABand.astro';
+import ServiceMini from '../components/ServiceMini.astro';
+import VUMeters from '../components/islands/VUMeters';
+import LineIcon, { type IconName } from '../components/kit/LineIcon.astro';
+import { home } from '../data/pages/home';
+import { site } from '../data/site';
+import { services } from '../data/services';
+import { clientWall } from '../data/clients';
+import { photo } from '../data/photos';
+import { webPage } from '../lib/schema';
+
+const poster = photo('hero-trident-console-still')!;
+const heroWidths = [640, 960, 1280, 1600, 2200];
+const heroSizes = '100vw';
+const heroAvif = await getImage({ src: poster.src, widths: heroWidths, sizes: heroSizes, format: 'avif', quality: 70 });
+---
+<Base
+  title={home.seo.title}
+  description={home.seo.description}
+  path="/"
+  og="home"
+  schema={[webPage('/', home.seo.title, home.seo.description)]}
+  preload={[{ href: heroAvif.src, type: 'image/avif', srcset: heroAvif.srcSet.attribute, sizes: heroSizes }]}
+>
+  <section class="hero" data-hero aria-labelledby="hero-title">
+    <div class="hero__media" data-hero-parallax aria-hidden="true">
+      <div class="hero__mediaInner" data-hero-media>
+        <Picture
+          src={poster.src}
+          alt=""
+          widths={heroWidths}
+          sizes={heroSizes}
+          formats={['avif', 'webp']}
+          quality={70}
+          loading="eager"
+          fetchpriority="high"
+          class="hero__poster"
+        />
+        <video class="hero__video" data-hero-video muted loop playsinline preload="metadata" tabindex="-1">
+          <source data-src="/media/hero-console.webm" type="video/webm" />
+          <source data-src="/media/hero-console.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+    <div class="hero__overlay" aria-hidden="true"></div>
+
+    <div class="container hero__content">
+      <div class="hero__center">
+      <p class="eyebrow mono"><LED /> <span>{home.hero.eyebrow}</span></p>
+      <h1 id="hero-title" class="hero__title">
+        {home.hero.lines.map((l) => <span class="hero__line" data-hero-line>{l}</span>)}
+      </h1>
+      <p class="hero__sub" data-hero-in>{home.hero.sub}</p>
+      <Panel class="hero__meters" data-hero-in>
+        <VUMeters client:idle />
+        <div class="hero__ctas">
+          <Button href={site.phoneHref} data-meter-cta="0">BOOK A SESSION</Button>
+          <Button href="/the-space/" variant="ghost" data-meter-cta="1">SEE THE ROOMS</Button>
+        </div>
+      </Panel>
+      </div>
+      {home.hero.features.map((side, i) => (
+        <ul role="list" class:list={['hero__feats', i ? 'hero__feats--r' : 'hero__feats--l']} data-hero-in>
+          {side.map((f) => (
+            <li>
+              <a class="feat" href={`/services/#svc-${f.slug}`}>
+                <span class="feat__icon"><LineIcon name={f.icon as IconName} /></span>
+                <span class="feat__text">
+                  <span class="feat__title mono">{f.title}</span>
+                  <span class="feat__line">{f.line}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+    <div class="hero__foot">
+      <button type="button" class="hero__hold" data-motion-toggle aria-pressed="false" aria-label={home.hero.motionHold}>
+        <LineIcon name="pause" size={18} class="hero__holdIcon hero__holdIcon--pause" />
+        <LineIcon name="play" size={18} class="hero__holdIcon hero__holdIcon--play" />
+      </button>
+      <Readout class="hero__readout" />
+    </div>
+  </section>
+
+  <section class="section rooms3" aria-labelledby="room-title">
+    <div class="container rooms3__grid">
+      <div class="rooms3__text" data-reveal>
+        <span class="nameplate">THE SPACE</span>
+        <h2 id="room-title">{home.room.title}</h2>
+        <Hairline />
+        <p class="lead">{home.room.body}</p>
+        <a class="textlink" href="/the-space/">SEE THE ROOMS →</a>
+      </div>
+      <PhotoFrame class="rooms3__tall" photoKey={home.room.frames[0].key} caption={home.room.frames[0].caption} ratio="3/4" sizes="(min-width: 1024px) 34vw, 100vw" data-reveal />
+      <PhotoFrame class="rooms3__a" photoKey={home.room.frames[1].key} caption={home.room.frames[1].caption} ratio="4/3" sizes="(min-width: 1024px) 30vw, 100vw" data-reveal />
+      <PhotoFrame class="rooms3__b" photoKey={home.room.frames[2].key} caption={home.room.frames[2].caption} ratio="4/3" sizes="(min-width: 1024px) 30vw, 100vw" data-reveal />
+    </div>
+  </section>
+
+  <section class="section owner" aria-labelledby="owner-title">
+    <div class="container">
+      <Panel variant="walnut" class="owner__panel" data-reveal>
+        <div class="owner__copy">
+          <span class="nameplate">{home.owner.plate}</span>
+          <h2 id="owner-title">{home.owner.title}</h2>
+          {home.owner.body.map((p) => <p>{p}</p>)}
+        </div>
+        <ul role="list" class="owner__list">
+          {home.owner.list.map((it) => (
+            <li class="knob-row"><Knob size={44} /><span>{it}</span></li>
+          ))}
+        </ul>
+      </Panel>
+    </div>
+  </section>
+
+  <section class="section svcprev" aria-labelledby="svc-title">
+    <div class="container">
+      <div class="section-head svcprev__head" data-reveal>
+        <span class="nameplate">SERVICES</span>
+        <h2 id="svc-title">{home.services.title}</h2>
+      </div>
+      <ul role="list" class="svcprev__grid">
+        {services.map((s) => <ServiceMini service={s} />)}
+      </ul>
+      <div class="svcprev__more" data-reveal>
+        <Button href="/services/" variant="ghost">SEE ALL SERVICES</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--graphite wall" aria-labelledby="wall-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">{home.clients.plate}</span>
+        <h2 id="wall-title">{home.clients.title}</h2>
+      </div>
+      <ul role="list" class="wall__names" data-reveal aria-label="Artists, shows and voices who have worked at Threshold">
+        {clientWall.map((c) => <li class={`wall__name wall__name--${c.size}`}>{c.name}</li>)}
+      </ul>
+      <ul role="list" class="wall__stats">
+        {site.stats.map((st) => (
+          <li class="nameplate nameplate--lg wall__stat" data-reveal><strong>{st.value}</strong> {st.label}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section addr" aria-labelledby="addr-title">
+    <div class="container addr__grid">
+      <div data-reveal><BlockMap /></div>
+      <div class="addr__text" data-reveal>
+        <span class="nameplate">517 WEST 45TH STREET</span>
+        <h2 id="addr-title">{home.address.title}</h2>
+        <Hairline />
+        <p>{home.address.body}</p>
+        <div class="btn-row">
+          <Button href={site.mapsUrl} variant="ghost" rel="noopener">GET DIRECTIONS</Button>
+          <a class="textlink" href="/the-space/">THE NEIGHBORHOOD →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABand title={home.cta.title} />
+</Base>
+
+<style>
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    min-height: max(100svh, 46rem);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__media { position: absolute; inset: 0; z-index: -2; }
+  .hero__mediaInner { position: absolute; inset: 0; }
+  .hero__mediaInner :global(picture), .hero__mediaInner :global(img), .hero__video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .hero__mediaInner :global(img), .hero__video { object-position: 62% 50%; }
+  .hero__video { opacity: 0; transition: opacity var(--t-power-on) var(--ease); }
+  .hero__video:global(.is-ready) { opacity: 1; }
+  .hero__overlay {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      /* Heavy edge vignette (Jon, 26_10_30): the room falls off into black at every edge, the desk stays lit. */
+      radial-gradient(ellipse 85% 80% at 50% 45%, transparent 30%, color-mix(in srgb, var(--th-ink) 55%, transparent) 62%, color-mix(in srgb, var(--th-ink) 92%, transparent) 100%),
+      radial-gradient(50% 55% at 50% 50%, color-mix(in srgb, var(--th-ink) 45%, transparent), transparent 75%),
+      linear-gradient(180deg, color-mix(in srgb, var(--th-ink) 35%, transparent) 0%, transparent 25%, transparent 60%, var(--th-ink) 100%),
+      var(--th-overlay);
+  }
+  /* Centered hero with circle-icon flanks (Jon, 26_10_30, after the reference): flanks sit beside the
+     center column at 1200px and up, and drop below it as two columns on smaller screens. */
+  .hero__content {
+    align-self: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--s-4);
+    row-gap: var(--s-10);
+    padding-top: calc(var(--nav-h) + var(--logo-hang) + var(--s-10));
+    padding-bottom: var(--s-8);
+  }
+  .hero__center { grid-column: 1 / -1; display: grid; justify-items: center; gap: var(--s-6); text-align: center; }
+  .hero__center .eyebrow + .hero__title { margin-top: calc(var(--s-4) * -1); } /* eyebrow sits 8px above the headline */
+  .hero .eyebrow { color: var(--th-cream); } /* cream holds 4.5:1 over the brightest frames. No text-shadow: it made this line the LCP and cost 2s */ /* holds 4.5:1 over the brightest frames */
+  .hero__feats { display: grid; gap: var(--s-6); align-content: start; }
+  .feat { position: relative; display: flex; align-items: center; gap: var(--s-3); min-height: 44px; text-decoration: none; color: var(--th-cream); }
+  .feat__icon {
+    flex: none; display: grid; place-items: center;
+    width: 44px; height: 44px; border-radius: var(--r-round);
+    color: var(--th-brass);
+    border: 1px solid color-mix(in srgb, var(--th-brass) 55%, transparent);
+    background: color-mix(in srgb, var(--th-ink) 45%, transparent);
+    transition: color var(--t-base) var(--ease), border-color var(--t-base) var(--ease), background-color var(--t-base) var(--ease);
+  }
+  /* Dotted run between circles, like the reference */
+  .hero__feats li + li .feat::before {
+    content: ''; position: absolute; left: 21.5px; bottom: calc(100% + 2px);
+    height: calc(var(--s-6) - 4px); border-left: 1px dotted color-mix(in srgb, var(--th-brass) 55%, transparent);
+  }
+  .feat__text { display: grid; gap: 2px; }
+  .feat__title { font-size: var(--fs-mono-sm); letter-spacing: var(--tracking-mono); color: var(--th-cream); }
+  .feat__line { display: none; font-size: 0.875rem; line-height: 1.4; text-wrap: pretty; color: var(--th-cream); max-width: 15rem; text-shadow: 0 1px 12px color-mix(in srgb, var(--th-black) 70%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .feat:hover .feat__icon { color: var(--th-brass-bright); border-color: var(--th-brass-bright); background: color-mix(in srgb, var(--th-walnut) 45%, transparent); }
+    .feat:hover .feat__title { color: var(--th-brass-bright); }
+  }
+  @media (min-width: 600px) {
+    .feat__line { display: block; }
+    .hero__content { column-gap: var(--s-8); }
+    .hero__feats { justify-self: center; }
+  }
+  @media (min-width: 1200px) {
+    .hero__content.container { max-width: 90rem; grid-template-columns: minmax(13rem, 1fr) minmax(0, 54rem) minmax(13rem, 1fr); column-gap: var(--s-8); align-items: center; }
+    .hero__line { white-space: nowrap; }
+    .hero__center { grid-column: 2; grid-row: 1; }
+    .hero__feats { grid-row: 1; gap: var(--s-8); justify-self: start; }
+    .hero__feats--l { grid-column: 1; }
+    .hero__feats--r { grid-column: 3; justify-self: end; }
+    .hero__feats li + li .feat::before { height: calc(var(--s-8) - 4px); }
+  }
+  .hero__title {
+    display: grid;
+    justify-items: center;
+    font-size: clamp(2.5rem, 1rem + 3.2vw, 4.25rem);
+    font-weight: var(--fw-display);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 30px color-mix(in srgb, var(--th-black) 50%, transparent);
+  }
+  .hero__line { display: block; }
+  .hero__line + .hero__line { color: var(--th-brass-bright); font-style: normal; }
+  .hero__sub { font-size: var(--fs-lead); line-height: 1.5; max-width: 38rem; color: var(--th-cream); text-shadow: 0 1px 18px color-mix(in srgb, var(--th-black) 60%, transparent); }
+  /* A faint ink backing keeps the ghost button readable over the brightest video frames. */
+  .hero :global(.btn--ghost) { background: color-mix(in srgb, var(--th-ink) 55%, transparent); }
+  .hero :global(.btn--ghost:hover) { background: color-mix(in srgb, var(--th-walnut) 55%, var(--th-ink)); }
+  .hero__meters {
+    display: grid;
+    gap: var(--s-3);
+    width: min(100%, 30rem);
+    padding: var(--s-5);
+    margin-top: var(--s-2);
+  }
+  .hero__meters :global(.vu-pair) { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .hero__meters :global(.vu) { filter: drop-shadow(0 0 18px var(--th-amber-glow)); }
+  /* WCAG 2.2.2: the video loop and marquee move for more than five seconds, so the hero carries a small
+     icon-only pause in its bottom-right corner (Jon chose this over the PAUSE MOTION switch). Shown only when
+     motion is on; reduced motion already stills everything. */
+  .hero__foot { position: relative; min-width: 0; } /* without this the grid item grows to the marquee track width */
+  .hero__hold {
+    display: none; place-items: center;
+    position: absolute; right: var(--gutter); bottom: calc(100% + var(--s-4)); z-index: 2;
+    width: 44px; height: 44px; border-radius: var(--r-round);
+    color: var(--th-brass);
+    border: 1px solid color-mix(in srgb, var(--th-brass) 55%, transparent);
+    background: color-mix(in srgb, var(--th-ink) 55%, transparent);
+    transition: color var(--t-base) var(--ease), border-color var(--t-base) var(--ease), background-color var(--t-base) var(--ease);
+  }
+  :global(.js-motion) .hero__hold { display: grid; }
+  .hero__hold :global(.hero__holdIcon) { grid-area: 1 / 1; }
+  .hero__hold :global(.hero__holdIcon--play), .hero__hold[aria-pressed='true'] :global(.hero__holdIcon--pause) { display: none; }
+  .hero__hold[aria-pressed='true'] :global(.hero__holdIcon--play) { display: block; }
+  .hero__hold:hover { color: var(--th-brass-bright); border-color: var(--th-brass-bright); background: color-mix(in srgb, var(--th-walnut) 45%, var(--th-ink)); }
+  @media (max-width: 1199px) { .hero__content { padding-bottom: calc(44px + var(--s-12)); } } /* room for the pause button under the stacked features */
+  /* One CTA under each meter (Jon, 26_10_30); hovering or focusing one flips that meter's needle to 0 (VUMeters.tsx). */
+  .hero__ctas { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .hero__ctas :global(.btn) { width: 100%; white-space: normal; text-align: center; padding-inline: var(--s-3); }
+
+  /* ---------- The room, in three frames ---------- */
+  .rooms3__grid { display: grid; gap: var(--s-6); }
+  .rooms3__text { display: grid; gap: var(--s-5); align-content: start; }
+  @media (min-width: 1024px) {
+    .rooms3__grid {
+      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-areas: 'text text' 'tall a' 'tall b';
+      column-gap: var(--s-8);
+      row-gap: var(--s-8);
+    }
+    .rooms3__text { grid-area: text; grid-template-columns: 1fr 1fr; column-gap: var(--s-12); align-items: end; }
+    .rooms3__text > :global(.nameplate), .rooms3__text h2 { grid-column: 1; }
+    .rooms3__text :global(.hairline) { grid-column: 1 / -1; grid-row: 3; }
+    .rooms3__text .lead { grid-column: 2; grid-row: 1 / 3; align-self: end; }
+    .rooms3__text .textlink { grid-column: 2; grid-row: 4; }
+    :global(.rooms3__tall) { grid-area: tall; }
+    :global(.rooms3__a) { grid-area: a; }
+    :global(.rooms3__b) { grid-area: b; }
+  }
+
+  /* ---------- Owner ---------- */
+  .owner :global(.owner__panel) {
+    display: grid;
+    gap: var(--s-10);
+    padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.5rem, 0.75rem + 3vw, 4.5rem);
+  }
+  .owner__copy { display: grid; gap: var(--s-5); }
+  .owner__copy p { color: var(--th-parchment); }
+  .owner__copy p:first-of-type { color: var(--th-cream); font-size: var(--fs-lead); }
+  .owner__list { display: grid; gap: var(--s-4); align-content: center; }
+  .owner__list li {
+    display: flex; align-items: center; gap: var(--s-4);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-2);
+    background: color-mix(in srgb, var(--th-ink) 45%, transparent);
+    box-shadow: inset 0 0 0 1px var(--th-hairline-soft);
+    font-family: var(--font-display);
+    font-weight: var(--fw-display);
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+  @media (min-width: 900px) { .owner :global(.owner__panel) { grid-template-columns: 1.2fr 1fr; gap: var(--s-16); } }
+
+  /* ---------- Services preview ---------- */
+  /* Horizontal reference-style cards: one column on phones, two from 768px (ten cards, five even rows). */
+  .svcprev__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  @media (min-width: 768px) { .svcprev__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5); } }
+  .svcprev__more { margin-top: var(--s-10); }
+
+  /* ---------- Client wall ---------- */
+  .wall__names {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 0.35em 0;
+    font-family: var(--font-display);
+    font-weight: var(--fw-display);
+    line-height: 1.15;
+  }
+  .wall__name { white-space: nowrap; }
+  .wall__name:not(:last-child)::after { content: '·'; color: var(--th-brass); margin-inline: 0.45em; font-size: 0.8em; }
+  .wall__name--1 { font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem); color: var(--th-parchment); }
+  .wall__name--2 { font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.125rem); color: var(--th-cream); }
+  .wall__name--3 { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); color: var(--th-cream); font-weight: 500; }
+  .wall__stats { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-top: var(--s-16); }
+  .wall__stat { white-space: normal; }
+  .wall__stat strong { font-weight: 500; margin-right: 0.3em; }
+
+  /* ---------- Address ---------- */
+  .addr__grid { display: grid; gap: var(--s-10); align-items: center; }
+  .addr__text { display: grid; gap: var(--s-5); }
+  @media (min-width: 1024px) { .addr__grid { grid-template-columns: 1.25fr 1fr; gap: var(--s-16); } }
+</style>

@@ -1,0 +1,6 @@
+---
+// Brass label with engraved black mono text. Used for eyebrows, room plates and service numbers.
+interface Props { size?: 'sm' | 'lg' | 'num'; as?: 'span' | 'p' | 'div'; class?: string }
+const { size = 'sm', as: Tag = 'span', class: cls = '' } = Astro.props;
+---
+<Tag class:list={['nameplate', size !== 'sm' && `nameplate--${size}`, cls]}><slot /></Tag>

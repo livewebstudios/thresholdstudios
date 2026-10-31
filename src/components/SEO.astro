@@ -1,0 +1,29 @@
+---
+// Head block in the order seo-standards.md asks for. Every page is noindex (demo).
+import { site } from '../data/site';
+interface Props { title: string; description: string; path: string; og: string; schema: object[] }
+const { title, description, path, og, schema } = Astro.props;
+const canonical = new URL(path, site.url).href;
+const ogImage = new URL(`/og/${og}.png`, site.url).href;
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content="noindex, nofollow" />
+
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content={canonical} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@ThresholdNYC" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}

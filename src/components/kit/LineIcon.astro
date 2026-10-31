@@ -1,0 +1,18 @@
+---
+// Thin-line studio icons (24px grid, 1.5 stroke, currentColor). Decorative: always aria-hidden.
+// Used in the home hero feature flanks, the service card arrow and the hero motion pause button.
+export type IconName = 'mic' | 'faders' | 'wave' | 'headphones' | 'camera' | 'live' | 'arrow' | 'pause' | 'play';
+interface Props { name: IconName; size?: number; class?: string }
+const { name, size = 22, class: cls = '' } = Astro.props;
+---
+<svg class:list={['lineicon', cls]} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {name === 'mic' && (<><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6" /></>)}
+  {name === 'faders' && (<><path d="M6 3v18M12 3v18M18 3v18" /><rect x="4" y="13" width="4" height="3" rx="1" fill="currentColor" /><rect x="10" y="6" width="4" height="3" rx="1" fill="currentColor" /><rect x="16" y="10" width="4" height="3" rx="1" fill="currentColor" /></>)}
+  {name === 'wave' && <path d="M3 12h1M6 9.5v5M9 6v12M12 9v6M15 4v16M18 8v8M21 12h-.5" />}
+  {name === 'headphones' && (<><path d="M4 15v-3a8 8 0 0 1 16 0v3" /><rect x="3" y="14" width="4" height="7" rx="1.5" /><rect x="17" y="14" width="4" height="7" rx="1.5" /></>)}
+  {name === 'camera' && (<><rect x="2.5" y="6.5" width="13" height="11" rx="2" /><path d="M15.5 10.5l6-3.5v10l-6-3.5z" /></>)}
+  {name === 'live' && (<><circle cx="12" cy="12" r="2" /><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8" /></>)}
+  {name === 'arrow' && <path d="M8 16L16 8M9.5 8H16v6.5" />}
+  {name === 'pause' && <path d="M9 6v12M15 6v12" />}
+  {name === 'play' && <path d="M8 5.5v13l10-6.5z" />}
+</svg>

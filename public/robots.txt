@@ -1,0 +1,9 @@
+# DEMO: Threshold Recording Studios NYC design preview. Nothing here should be indexed.
+User-agent: *
+Disallow: /
+
+# PRODUCTION (full build): replace the block above with:
+# User-agent: *
+# Allow: /
+# Disallow: /dev/
+# Sitemap: https://thresholdstudios.com/sitemap-index.xml

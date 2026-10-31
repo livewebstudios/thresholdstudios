@@ -1,0 +1,6 @@
+---
+// Primary: brass nameplate with a physical bevel. Ghost: brass outline that fills walnut on hover.
+interface Props { href: string; variant?: 'primary' | 'ghost'; size?: 'md' | 'sm'; class?: string; [key: string]: unknown }
+const { href, variant = 'primary', size = 'md', class: cls = '', ...rest } = Astro.props;
+---
+<a href={href} class:list={['btn', `btn--${variant}`, size === 'sm' && 'btn--sm', cls]} {...rest}><slot /></a>

@@ -1,0 +1,25 @@
+---
+// Scroll progress fader for the nav: a slotted track with a brass cap. motion.ts moves the cap.
+---
+<span class="fader" aria-hidden="true" data-fader>
+  <span class="fader__slot"></span>
+  {Array.from({ length: 5 }, (_, i) => <span class={`fader__tick fader__tick--${i}`}></span>)}
+  <span class="fader__cap" data-fader-cap></span>
+</span>
+<style>
+  .fader { position: relative; display: inline-block; width: 18px; height: 48px; flex: none; }
+  .fader__slot {
+    position: absolute; left: 50%; top: 2px; bottom: 2px; width: 3px; translate: -50% 0;
+    background: var(--th-well); border-radius: 2px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--th-steel) 45%, transparent), 0 1px 0 color-mix(in srgb, var(--th-cream) 8%, transparent);
+  }
+  .fader__tick { position: absolute; left: 0; width: 4px; height: 1px; background: var(--th-steel); opacity: 0.7; }
+  .fader__tick--0 { top: 4px; } .fader__tick--1 { top: 14px; } .fader__tick--2 { top: 24px; } .fader__tick--3 { top: 34px; } .fader__tick--4 { top: 44px; }
+  .fader__cap {
+    position: absolute; left: 50%; top: 0; width: 16px; height: 9px; translate: -50% 0;
+    transform: translateY(39px);
+    background: linear-gradient(180deg, var(--th-brass-bright), var(--th-brass) 45%, var(--th-brass-dark) 50%, var(--th-brass) 55%, var(--th-brass-mid));
+    border-radius: 2px; box-shadow: 0 2px 3px color-mix(in srgb, var(--th-black) 70%, transparent);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) { .fader__cap { transform: none; } }
+</style>

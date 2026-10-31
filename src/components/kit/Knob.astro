@@ -1,0 +1,58 @@
+---
+// Rotary control: graphite radial face, brass indicator, 11 steel ticks. Hovering its .knob-row turns the dial up
+// 135° (Jon, 26_10_30: livelier than the handoff's 30°) and the ticks light brass in sequence as the pointer passes.
+interface Props { size?: number; class?: string }
+const { size = 48, class: cls = '' } = Astro.props;
+const ticks = Array.from({ length: 11 }, (_, i) => -135 + i * 27);
+const uid = `k${Math.random().toString(36).slice(2, 8)}`;
+---
+<span class:list={['knob', cls]} aria-hidden="true">
+  <svg viewBox="0 0 64 64" width={size} height={size}>
+    <defs>
+      <radialGradient id={`${uid}-face`} cx="40%" cy="32%" r="75%">
+        <stop offset="0" class="knob-s-1" />
+        <stop offset="0.55" class="knob-s-2" />
+        <stop offset="1" class="knob-s-3" />
+      </radialGradient>
+      <linearGradient id={`${uid}-skirt`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" class="knob-s-4" />
+        <stop offset="1" class="knob-s-5" />
+      </linearGradient>
+    </defs>
+    {ticks.map((a, i) => (
+      <line x1="32" y1="2.5" x2="32" y2="6.5" class="knob__tick" style={`--i: ${i}`} data-lit={a <= 105 ? '' : undefined} transform={`rotate(${a} 32 32)`} />
+    ))}
+    <circle cx="32" cy="33" r="22" class="knob__shadow" />
+    <circle cx="32" cy="32" r="22" fill={`url(#${uid}-skirt)`} />
+    <g class="knob__cap">
+      <circle cx="32" cy="32" r="17.5" fill={`url(#${uid}-face)`} class="knob__face" />
+      <circle cx="32" cy="32" r="17.5" class="knob__knurl" />
+      <line x1="32" y1="17" x2="32" y2="26" class="knob__pointer" />
+    </g>
+  </svg>
+</span>
+<style is:global>
+  .knob { display: inline-block; flex: none; line-height: 0; }
+  .knob-s-1 { stop-color: var(--th-metal-4); }
+  .knob-s-2 { stop-color: var(--th-metal-2); }
+  .knob-s-3 { stop-color: var(--th-metal-1); }
+  .knob-s-4 { stop-color: var(--th-metal-3); }
+  .knob-s-5 { stop-color: var(--th-metal-0); }
+  .knob__tick { stroke: var(--th-steel); stroke-width: 1.2; stroke-linecap: round; transition: stroke var(--t-fast) var(--ease); }
+  .knob svg { transition: filter var(--t-knob) var(--ease); }
+  .knob__shadow { fill: var(--th-black); opacity: 0.45; }
+  .knob__face { stroke: var(--th-black); stroke-opacity: 0.5; }
+  .knob__knurl { fill: none; stroke: var(--th-cream); stroke-opacity: 0.1; stroke-dasharray: 1.5 2.2; }
+  .knob__pointer { stroke: var(--th-brass); stroke-width: 2.4; stroke-linecap: round; }
+  .knob__cap {
+    transform-box: view-box;
+    transform-origin: 32px 32px;
+    transform: rotate(-30deg);
+    transition: transform var(--t-knob) var(--ease-power3-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .knob-row:hover .knob__cap { transform: rotate(105deg); }
+    .knob-row:hover .knob__tick[data-lit] { stroke: var(--th-brass-bright); transition-delay: calc(var(--i) * 45ms); }
+    .knob-row:hover .knob svg { filter: drop-shadow(0 0 6px var(--th-amber-glow)); }
+  }
+</style>

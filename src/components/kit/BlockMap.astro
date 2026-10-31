@@ -1,0 +1,122 @@
+---
+// Engraved-plate line map of the blocks around 517 W 45th. Hand-placed on the Manhattan grid
+// (41st to 47th Streets, 8th to 12th Avenues), drawn north-up with avenue blocks at roughly 2.6x street blocks.
+// No buildings, no skyline, no pictures: lines, labels and one brass LED.
+import Panel from './Panel.astro';
+interface Props { class?: string; size?: 'md' | 'lg' }
+const { class: cls = '', size = 'md' } = Astro.props;
+
+const avenues = [
+  { x: 120, label: '12 AV' }, { x: 300, label: '11 AV' }, { x: 480, label: '10 AV' },
+  { x: 660, label: '9 AV' }, { x: 840, label: '8 AV' },
+];
+const streets = [47, 46, 45, 44, 43, 42, 41].map((n, i) => ({ n, y: 70 + i * 70 }));
+const yOf = (n: number) => 70 + (47 - n) * 70;
+const studio = { x: 480 - 0.3 * 180, y: yOf(45) - 11 };
+---
+<Panel variant="raised" class:list={['blockmap', `blockmap--${size}`, cls]}>
+  <div class="blockmap__scroll" tabindex="0" role="region" aria-label="Neighborhood map, scrolls sideways on small screens">
+  <svg viewBox="0 0 1000 560" role="img" aria-labelledby="bm-title bm-desc">
+    <title id="bm-title">Map of the blocks around Threshold Recording Studios NYC</title>
+    <desc id="bm-desc">517 West 45th Street sits between 10th and 11th Avenues in Hell's Kitchen, north of the Lincoln Tunnel and Port Authority, west of the Theater District, with the Hudson River to the west.</desc>
+    <defs>
+      <pattern id="bm-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="9" class="bm-hatch" />
+      </pattern>
+      <radialGradient id="bm-led" cx="50%" cy="50%" r="50%">
+        <stop offset="0" class="bm-s-glow" />
+        <stop offset="1" class="bm-s-glow bm-s-clear" />
+      </radialGradient>
+    </defs>
+
+    <!-- Hudson River -->
+    <rect x="0" y="0" width="96" height="560" fill="url(#bm-hatch)" />
+    <line x1="96" y1="0" x2="96" y2="560" class="bm-shore" />
+    <text class="bm-river" x="44" y="300" transform="rotate(-90 44 300)" text-anchor="middle">HUDSON RIVER</text>
+    <!-- Piers 84 and 86 -->
+    <rect x="34" y={yOf(46) - 9} width="62" height="18" class="bm-pier" />
+    <rect x="44" y={yOf(44) - 7} width="52" height="14" class="bm-pier bm-pier--small" />
+    <text class="bm-small" x="104" y={yOf(46) - 14}>PIER 86 · INTREPID</text>
+    <text class="bm-small" x="104" y={yOf(44) + 22}>PIER 84</text>
+
+    <!-- Streets -->
+    {streets.map((s) => (
+      <g>
+        <line x1="96" y1={s.y} x2="1000" y2={s.y} class:list={['bm-street', s.n === 45 && 'bm-street--home']} />
+        {s.n !== 41 && <text class="bm-label" x="750" y={s.y - 8} text-anchor="middle">W {s.n} ST</text>}
+      </g>
+    ))}
+    <!-- Avenues -->
+    {avenues.map((a) => (
+      <g>
+        <line x1={a.x} y1="20" x2={a.x} y2="560" class="bm-ave" />
+        <text class="bm-label bm-label--ave" x={a.x} y="14" text-anchor="middle">{a.label}</text>
+      </g>
+    ))}
+
+    <!-- Dyer Avenue and the Lincoln Tunnel approach -->
+    <line x1="570" y1={yOf(42)} x2="570" y2="560" class="bm-dyer" />
+    <rect x="532" y={yOf(41) - 26} width="76" height="58" rx="10" class="bm-outline" />
+    <text class="bm-small" x="570" y={yOf(41) + 6} text-anchor="middle">LINCOLN</text>
+    <text class="bm-small" x="570" y={yOf(41) + 20} text-anchor="middle">TUNNEL</text>
+
+    <!-- Port Authority Bus Terminal (40th to 42nd, 8th to 9th) -->
+    <rect x="676" y={yOf(42) + 12} width="148" height="140" class="bm-outline" />
+    <text class="bm-small" x="750" y={yOf(41) + 2} text-anchor="middle">PORT AUTHORITY</text>
+    <text class="bm-small" x="750" y={yOf(41) + 16} text-anchor="middle">BUS TERMINAL</text>
+
+    <!-- Theater District, east of 8th -->
+    <text class="bm-small bm-east" x="922" y={yOf(45) + 30} text-anchor="middle">THEATER</text>
+    <text class="bm-small bm-east" x="922" y={yOf(45) + 46} text-anchor="middle">DISTRICT →</text>
+
+    <!-- The studio -->
+    <circle cx={studio.x} cy={studio.y} r="26" fill="url(#bm-led)" class="bm-glow" />
+    <circle cx={studio.x} cy={studio.y} r="6.5" class="bm-dot" />
+    <circle cx={studio.x - 1.6} cy={studio.y - 1.6} r="2.2" class="bm-dot-hi" />
+    <g transform={`translate(${studio.x - 66} ${studio.y - 52})`}>
+      <rect width="132" height="28" rx="2" class="bm-dot" />
+      <text class="bm-plate" x="66" y="18.5" text-anchor="middle">517 W 45TH</text>
+      <line x1="66" y1="28" x2="66" y2="40" class="bm-stem" />
+    </g>
+
+    <!-- North -->
+    <g transform="translate(160 512)">
+      <circle r="16" class="bm-compass" />
+      <path d="M0 -12 L5 4 L0 0 L-5 4 Z" class="bm-north" />
+      <text class="bm-small" y="-22" text-anchor="middle">N</text>
+    </g>
+  </svg>
+  </div>
+</Panel>
+<style is:global>
+  .blockmap { padding: clamp(0.75rem, 0.5rem + 1.4vw, 1.75rem); }
+  .blockmap svg { width: 100%; height: auto; }
+  .bm-street { stroke: var(--th-steel); stroke-opacity: 0.75; stroke-width: 1; }
+  .bm-street--home { stroke: var(--th-brass); stroke-opacity: 0.85; stroke-width: 1.6; }
+  .bm-ave { stroke: var(--th-parchment); stroke-opacity: 0.8; stroke-width: 2; }
+  .bm-dyer { stroke: var(--th-steel); stroke-dasharray: 5 5; stroke-width: 1.2; }
+  .bm-outline { fill: color-mix(in srgb, var(--th-charcoal) 60%, transparent); stroke: var(--th-parchment); stroke-opacity: 0.55; stroke-width: 1; }
+  .blockmap text { font-family: var(--font-mono); letter-spacing: 0.12em; }
+  .bm-label { font-size: 16px; fill: var(--th-parchment); }
+  .bm-label--ave { font-weight: 500; fill: var(--th-cream); }
+  .bm-small { font-size: 15px; fill: var(--th-parchment); }
+  .bm-river { font-size: 15px; fill: var(--th-steel); letter-spacing: 0.4em; }
+  .bm-east { fill: var(--th-brass); }
+  .bm-plate { font-size: 15px; font-weight: 500; fill: var(--th-engrave); }
+  .bm-hatch { stroke: var(--th-steel); stroke-opacity: 0.35; stroke-width: 1; }
+  .bm-s-glow { stop-color: var(--th-amber); stop-opacity: 0.55; }
+  .bm-s-clear { stop-opacity: 0; }
+  .bm-shore { stroke: var(--th-steel); stroke-opacity: 0.6; }
+  .bm-pier { fill: var(--th-charcoal); stroke: var(--th-steel); stroke-opacity: 0.7; }
+  .bm-pier--small { stroke-opacity: 0.5; }
+  .bm-dot { fill: var(--th-brass); stroke: var(--th-brass-dark); }
+  .bm-dot-hi { fill: var(--th-cream); fill-opacity: 0.8; }
+  .bm-stem { stroke: var(--th-brass); stroke-width: 1.5; }
+  .bm-compass { fill: none; stroke: var(--th-steel); stroke-opacity: 0.6; }
+  .bm-north { fill: var(--th-brass); }
+  .bm-glow { animation: led-breathe var(--t-breathe) var(--ease) infinite; }
+  .blockmap__scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--th-steel) transparent; }
+  @media (max-width: 640px) {
+    .blockmap__scroll svg { min-width: 600px; }
+  }
+</style>

@@ -1,0 +1,6 @@
+---
+// 10px indicator with inner glow. Amber for ON, red for REC. Breathes at 2.4s.
+interface Props { color?: 'amber' | 'red'; class?: string }
+const { color = 'amber', class: cls = '' } = Astro.props;
+---
+<span class:list={['led', color === 'red' && 'led--red', cls]} aria-hidden="true" data-led></span>

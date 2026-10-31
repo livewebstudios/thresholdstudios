@@ -1,0 +1,60 @@
+---
+// Page shell: head (SEO, schema, GA4 placeholder, noindex), skip link, header, footer, motion.
+import '../styles/tokens.css';
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { recordingStudio } from '../lib/schema';
+import jakarta from '../assets/fonts/plus-jakarta-sans-latin-wght-normal.woff2?url';
+import mono400 from '../assets/fonts/ibm-plex-mono-latin-400-normal.woff2?url';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  og: string;
+  schema?: object[];
+  preload?: { href: string; type?: string; media?: string; srcset?: string; sizes?: string }[];
+  is404?: boolean;
+}
+const { title, description, path, og, schema = [], preload = [], is404 = false } = Astro.props;
+const ga4 = import.meta.env.PUBLIC_GA4_ID;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {is404 && <base href="/" />}
+    <SEO title={title} description={description} path={path} og={og} schema={[recordingStudio(), ...schema]} />
+    <meta name="theme-color" content="#0e0c0a" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={jakarta} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={mono400} as="font" type="font/woff2" crossorigin />
+    {preload.map((p) => <link rel="preload" as="image" href={p.href} type={p.type} media={p.media} imagesrcset={p.srcset} imagesizes={p.sizes} fetchpriority="high" />)}
+    <script is:inline>
+      try { if (sessionStorage.getItem('th-motion') === 'paused') document.documentElement.dataset.motion = 'paused'; } catch (e) {}
+      if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) document.documentElement.classList.add('js-motion');
+    </script>
+    <!-- GA4: set PUBLIC_GA4_ID (G-XXXXXXXXXX) to render the tag. Blank for the demo. -->
+    {ga4 && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>}
+    {ga4 && <script is:inline define:vars={{ ga4 }}>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', ga4);</script>}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">SKIP TO CONTENT</a>
+    <Header path={path} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <p class="toast nameplate nameplate--lg" role="status" aria-live="polite" data-toast></p>
+    <script>
+      import '../scripts/motion';
+      import '../scripts/ui';
+    </script>
+  </body>
+</html>

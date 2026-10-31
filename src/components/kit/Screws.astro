@@ -1,0 +1,22 @@
+---
+// Four slotted screw heads, 14px inset from the panel corners.
+const angles = [18, -34, 62, -8];
+---
+<span class="screws" aria-hidden="true">
+  {angles.map((a, i) => (
+    <svg class={`screw screw--${i}`} viewBox="0 0 12 12" width="6" height="6">
+      <circle cx="6" cy="6" r="5.5" class="screw__head" />
+      <line x1="2.4" y1="6" x2="9.6" y2="6" class="screw__slot" transform={`rotate(${a} 6 6)`} />
+    </svg>
+  ))}
+</span>
+<style>
+  .screw__head { fill: var(--th-metal-6); stroke: var(--th-metal-5); stroke-width: 0.6; }
+  .screw__slot { stroke: var(--th-metal-2); stroke-width: 1.4; stroke-linecap: round; }
+  .screws { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+  .screw { position: absolute; width: 6px; height: 6px; filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--th-black) 70%, transparent)); }
+  .screw--0 { top: 14px; left: 14px; }
+  .screw--1 { top: 14px; right: 14px; }
+  .screw--2 { bottom: 14px; left: 14px; }
+  .screw--3 { bottom: 14px; right: 14px; }
+</style>

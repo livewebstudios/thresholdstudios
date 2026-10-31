@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Panel from '../components/kit/Panel.astro';
+import Button from '../components/kit/Button.astro';
+import VUMeter from '../components/kit/VUMeter';
+import { notFound } from '../data/pages/misc';
+import { site, nav } from '../data/site';
+---
+<Base title={notFound.seo.title} description={notFound.seo.description} path="/404/" og="home" is404>
+  <section class="nf" data-hero aria-labelledby="nf-title">
+    <div class="container nf__grid">
+      <div class="nf__text">
+        <span class="nameplate">ERROR 404 · NO SIGNAL</span>
+        <h1 id="nf-title" data-hero-line>{notFound.title}</h1>
+        <p class="lead" data-hero-in>{notFound.body}</p>
+        <ul role="list" class="nf__links mono" data-hero-in>
+          {nav.map((n) => <li><a class="textlink" href={n.href}>{n.label}</a></li>)}
+        </ul>
+        <div class="btn-row" data-hero-in><Button href={site.phoneHref}>CALL {site.phone}</Button></div>
+      </div>
+      <Panel class="nf__meter" data-hero-in>
+        <span class="nameplate nf__plate">MONITOR · L</span>
+        <VUMeter id="vu-404" db={-20} label="VU" />
+      </Panel>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { min-height: 100svh; display: grid; align-items: center; padding-top: calc(var(--nav-h) + var(--logo-hang) + var(--s-12)); padding-bottom: var(--s-16); }
+  .nf__grid { display: grid; gap: var(--s-12); align-items: center; }
+  .nf__text { display: grid; gap: var(--s-5); justify-items: start; }
+  .nf__text h1 { font-size: var(--fs-h1); }
+  .nf__links { display: flex; flex-wrap: wrap; gap: var(--s-6); }
+  .nf :global(.nf__meter) { padding: var(--s-10) var(--s-6) var(--s-6); max-width: 26rem; width: 100%; }
+  .nf__plate { position: absolute; top: -0.75rem; left: var(--s-6); }
+  @media (min-width: 900px) { .nf__grid { grid-template-columns: 1.2fr 1fr; } }
+</style>

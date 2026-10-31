@@ -1,0 +1,128 @@
+---
+// Jon-only bench: every component, every color pair with its ratio, the tagline alternates. Excluded from the sitemap.
+import Base from '../../layouts/Base.astro';
+import Panel from '../../components/kit/Panel.astro';
+import PhotoFrame from '../../components/kit/PhotoFrame.astro';
+import Button from '../../components/kit/Button.astro';
+import Knob from '../../components/kit/Knob.astro';
+import LED from '../../components/kit/LED.astro';
+import Fader from '../../components/kit/Fader.astro';
+import Hairline from '../../components/kit/Hairline.astro';
+import Readout from '../../components/kit/Readout.astro';
+import BlockMap from '../../components/kit/BlockMap.astro';
+import Breadcrumbs from '../../components/kit/Breadcrumbs.astro';
+import VUMeter from '../../components/kit/VUMeter';
+import VUMeters from '../../components/islands/VUMeters';
+import ServiceFilter from '../../components/islands/ServiceFilter';
+import { devPage } from '../../data/pages/misc';
+import { site } from '../../data/site';
+import { groups } from '../../data/services';
+import { palette, pairs, ratio, color } from '../../lib/contrast';
+
+const swatches = Object.entries(palette);
+---
+<Base title={devPage.seo.title} description={devPage.seo.description} path="/dev/" og="home">
+  <section class="dev-hero" data-hero aria-labelledby="dev-h1">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'HOME', href: '/' }, { label: 'DEV' }]} />
+      <h1 id="dev-h1" data-hero-line>{devPage.title}</h1>
+      <p class="lead" data-hero-in>{devPage.intro}</p>
+    </div>
+  </section>
+
+  <section class="section dev" aria-labelledby="dev-tag">
+    <div class="container dev__stack">
+      <div class="dev__block">
+        <h2 id="dev-tag" class="mono dev__h">TAGLINE · LOCKED</h2>
+        <p class="dev__tagline">{site.tagline}</p>
+        <p class="muted">{site.taglineSub}</p>
+        <h3 class="mono dev__h dev__h--sub">ALTERNATES (FOR JON)</h3>
+        <ul role="list" class="dev__alts">{site.taglineAlternates.map((t) => <li>{t}</li>)}</ul>
+      </div>
+
+      <div class="dev__block">
+        <h2 class="mono dev__h">COLOR</h2>
+        <ul role="list" class="dev__swatches">
+          {swatches.map(([name, hex]) => (
+            <li class={`dev__swatch dev__swatch--${name}`}><span class="mono mono--sm">--th-{name}</span><span class="mono mono--sm">{hex}</span></li>
+          ))}
+        </ul>
+        <h3 class="mono dev__h dev__h--sub">TEXT PAIRS · WCAG 2.2 AA</h3>
+        <table class="dev__pairs mono mono--sm">
+          <thead><tr><th scope="col">PAIR</th><th scope="col">RATIO</th><th scope="col">USE</th></tr></thead>
+          <tbody>
+            {pairs.map((p) => (
+              <tr><td>{p.fg} on {p.bg}</td><td>{ratio(color(p.fg), color(p.bg))}:1 {ratio(color(p.fg), color(p.bg)) >= p.min ? 'PASS' : 'FAIL'}</td><td>{p.use}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dev__block">
+        <h2 class="mono dev__h">TYPE</h2>
+        <p class="dev__display">Plus Jakarta Sans. Legendary Space.</p>
+        <p>Plus Jakarta Sans for body copy. 18 to 19px, 1.6 line height, 66 characters at most. A letterpress menu, not a SaaS page.</p>
+        <p class="mono">IBM PLEX MONO · ENGRAVED LABELS · 0.14EM</p>
+      </div>
+
+      <div class="dev__grid">
+        <Panel class="dev__cell"><h2 class="mono dev__h">PANEL</h2><p class="muted">Charcoal face, steel hairline, four screws.</p></Panel>
+        <Panel variant="walnut" class="dev__cell"><h2 class="mono dev__h">PANEL · WALNUT</h2><p class="muted">Walnut end-cheeks.</p></Panel>
+        <Panel class="dev__cell"><h2 class="mono dev__h">NAMEPLATE</h2><div class="dev__row"><span class="nameplate">PROPRIETOR</span><span class="nameplate nameplate--num">07</span><span class="nameplate nameplate--lg">LIVE ROOM · 20 × 25 FT</span></div></Panel>
+        <Panel class="dev__cell knob-row"><h2 class="mono dev__h">KNOB</h2><div class="dev__row"><Knob size={44} /><Knob size={56} /><Knob size={64} /></div></Panel>
+        <Panel class="dev__cell"><h2 class="mono dev__h">FADER · LED</h2><div class="dev__row"><Fader /><LED /><LED color="red" /><span class="mono mono--sm">ON · REC</span></div></Panel>
+        <Panel class="dev__cell"><h2 class="mono dev__h">BUTTONS</h2><div class="btn-row"><Button href={site.phoneHref}>BOOK A SESSION</Button><Button href="/the-space/" variant="ghost">SEE THE ROOMS</Button></div></Panel>
+        <Panel class="dev__cell dev__cell--wide"><h2 class="mono dev__h">VU METERS · LIVE</h2><VUMeters client:visible /></Panel>
+        <Panel class="dev__cell"><h2 class="mono dev__h">VU METER · STATIC −20</h2><VUMeter id="vu-dev" db={-20} /></Panel>
+        <Panel class="dev__cell dev__cell--wide"><h2 class="mono dev__h">TOGGLE FILTER</h2><ServiceFilter client:visible groups={groups} label="Demo filter" /></Panel>
+        <Panel class="dev__cell dev__cell--wide"><h2 class="mono dev__h">HAIRLINE</h2><Hairline /></Panel>
+      </div>
+
+      <div class="dev__block">
+        <h2 class="mono dev__h">READOUT</h2>
+        <Readout />
+      </div>
+
+      <div class="dev__grid">
+        <div class="dev__cell--wide"><h2 class="mono dev__h">PHOTO FRAME</h2><PhotoFrame photoKey="control-room-window-view" caption="CONTROL ROOM · 15 × 20 FT" ratio="16/9" sizes="(min-width: 1024px) 60vw, 100vw" /></div>
+        <div class="dev__cell--wide"><h2 class="mono dev__h">BLOCK MAP</h2><BlockMap /></div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .dev-hero { padding-top: calc(var(--nav-h) + var(--logo-hang) + var(--s-12)); }
+  .dev-hero .container { display: grid; gap: var(--s-5); }
+  .dev__stack { display: grid; gap: var(--s-16); }
+  .dev__block { display: grid; gap: var(--s-4); }
+  .dev__h { color: var(--th-brass); font-weight: 500; margin-bottom: var(--s-2); }
+  .dev__h--sub { margin-top: var(--s-6); }
+  .dev__tagline, .dev__display { font-family: var(--font-display); font-weight: var(--fw-display); font-size: var(--fs-h2); line-height: 1.1; }
+  .dev__alts { display: grid; gap: var(--s-2); font-family: var(--font-display); font-weight: var(--fw-display); font-size: 1.5rem; color: var(--th-parchment); }
+  .dev__swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: var(--s-3); }
+  .dev__swatch { display: grid; align-content: end; min-height: 6.5rem; padding: var(--s-3); border-radius: var(--r-2); box-shadow: inset 0 0 0 1px var(--th-hairline); }
+  .dev__swatch--ink { background: var(--th-ink); }
+  .dev__swatch--charcoal { background: var(--th-charcoal); }
+  .dev__swatch--graphite { background: var(--th-graphite); }
+  .dev__swatch--walnut { background: var(--th-walnut); color: var(--th-cream); }
+  .dev__swatch--brass { background: var(--th-brass); color: var(--th-ink); }
+  .dev__swatch--brass-bright { background: var(--th-brass-bright); color: var(--th-ink); }
+  .dev__swatch--amber { background: var(--th-amber); color: var(--th-ink); }
+  .dev__swatch--cream { background: var(--th-cream); color: var(--th-ink); }
+  .dev__swatch--parchment { background: var(--th-parchment); color: var(--th-ink); }
+  .dev__swatch--steel { background: var(--th-steel); color: var(--th-ink); }
+  .dev__swatch--red { background: var(--th-red); color: var(--th-cream); }
+  .dev__swatch--well { background: var(--th-well); }
+  .dev__swatch--engrave { background: var(--th-engrave); }
+  .dev__pairs { width: 100%; border-collapse: collapse; }
+  .dev__pairs th, .dev__pairs td { text-align: left; padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--th-hairline-soft); }
+  .dev__pairs th { color: var(--th-brass); font-weight: 500; }
+  .dev__grid { display: grid; gap: var(--s-8); }
+  @media (min-width: 900px) { .dev__grid { grid-template-columns: repeat(2, 1fr); } }
+  .dev :global(.dev__cell) { padding: var(--s-10) var(--s-8) var(--s-8); display: grid; gap: var(--s-4); align-content: start; }
+  @media (min-width: 900px) { .dev :global(.dev__cell--wide) { grid-column: 1 / -1; } }
+  .dev__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-5); }
+  .dev :global(.vu-pair) { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); max-width: 40rem; }
+  .dev :global(.vu) { max-width: 22rem; }
+  @media (max-width: 600px) { .dev__pairs td:last-child, .dev__pairs th:last-child { display: none; } }
+</style>

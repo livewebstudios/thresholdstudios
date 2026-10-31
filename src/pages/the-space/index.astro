@@ -1,0 +1,269 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Panel from '../../components/kit/Panel.astro';
+import PhotoFrame from '../../components/kit/PhotoFrame.astro';
+import Button from '../../components/kit/Button.astro';
+import Knob from '../../components/kit/Knob.astro';
+import LED from '../../components/kit/LED.astro';
+import Hairline from '../../components/kit/Hairline.astro';
+import Breadcrumbs from '../../components/kit/Breadcrumbs.astro';
+import BlockMap from '../../components/kit/BlockMap.astro';
+import CTABand from '../../components/kit/CTABand.astro';
+import Lightbox from '../../components/islands/Lightbox';
+import { spacePage as pg } from '../../data/pages/space';
+import { site, rooms } from '../../data/site';
+import { gallery } from '../../data/gallery';
+import { photo } from '../../data/photos';
+import { webPage, breadcrumbs, place } from '../../lib/schema';
+
+const tiles = await Promise.all(
+  gallery.map(async (g) => {
+    const p = photo(g.key);
+    if (!p) return null;
+    const large = await getImage({ src: p.src, width: Math.min(1600, p.src.width), format: 'webp', quality: 78 });
+    return { ...g, large: large.src };
+  }),
+);
+const roomData = pg.rooms.map((r) => ({ ...r, room: rooms.find((x) => x.key === r.key)! }));
+---
+<Base
+  title={pg.seo.title}
+  description={pg.seo.description}
+  path="/the-space/"
+  og="the-space"
+  schema={[
+    webPage('/the-space/', pg.seo.title, pg.seo.description),
+    breadcrumbs([{ name: 'Home', path: '/' }, { name: 'The Space', path: '/the-space/' }]),
+    place(),
+  ]}
+>
+  <section class="shero" data-hero aria-labelledby="space-h1">
+    <div class="container shero__text">
+      <Breadcrumbs items={[{ label: 'HOME', href: '/' }, { label: 'THE SPACE' }]} />
+      <p class="eyebrow mono"><LED /> <span>{pg.hero.eyebrow}</span></p>
+      <h1 id="space-h1" data-hero-line>{pg.hero.title}</h1>
+      <p class="lead" data-hero-in>{pg.hero.sub}</p>
+      <div class="btn-row" data-hero-in>
+        <Button href={site.phoneHref}>BOOK A SESSION</Button>
+        <Button href={site.mapsUrl} variant="ghost" rel="noopener">GET DIRECTIONS</Button>
+      </div>
+    </div>
+    <div class="shero__frame" data-hero-in>
+      <PhotoFrame photoKey={pg.hero.frame.key} caption={pg.hero.frame.caption} ratio="21/9" priority sizes="100vw" screws parallax={false} />
+    </div>
+  </section>
+
+  <section class="section rooms" aria-labelledby="rooms-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">THREE ROOMS</span>
+        <h2 id="rooms-title">{pg.roomsTitle}</h2>
+      </div>
+      <ul role="list" class="rooms__grid">
+        {roomData.map((r) => (
+          <li data-reveal>
+            <Panel variant="walnut" as="article" class="room">
+              <span class="nameplate nameplate--lg room__plate">{r.room.plate}</span>
+              <PhotoFrame photoKey={r.photo} ratio="4/3" sizes="(min-width: 1100px) 31vw, (min-width: 720px) 50vw, 100vw" />
+              <div class="room__body">
+                <h3>{r.room.name}</h3>
+                <p class="mono room__dims"><span>DIMENSIONS</span> <span class="room__readout">{r.room.dims}</span></p>
+                <p>{r.body}</p>
+              </div>
+            </Panel>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section piano" aria-labelledby="piano-title">
+    <div class="container">
+      <Panel variant="walnut" class="piano__panel" data-reveal>
+        <PhotoFrame photoKey={pg.piano.photo} ratio="4/3" sizes="(min-width: 1024px) 45vw, 100vw" />
+        <div class="piano__text">
+          <span class="nameplate nameplate--lg">{pg.piano.plate}</span>
+          <h2 id="piano-title">{pg.piano.title}</h2>
+          {pg.piano.body.map((p) => <p>{p}</p>)}
+          <blockquote class="piano__quote">
+            <p>“{pg.piano.quote}”</p>
+            <footer class="mono">{pg.piano.quoteBy}</footer>
+          </blockquote>
+        </div>
+      </Panel>
+    </div>
+  </section>
+
+  <section class="section gallery" aria-labelledby="gallery-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">{pg.gallery.plate}</span>
+        <h2 id="gallery-title">{pg.gallery.title}</h2>
+      </div>
+      <Lightbox client:visible>
+        <ul role="list" class="masonry">
+          {tiles.map((t) => t && (
+            <li class="masonry__item">
+              <PhotoFrame photoKey={t.key} caption={t.caption} ratio="natural" sizes="(min-width: 1024px) 31vw, (min-width: 640px) 47vw, 100vw" href={t.large} lightbox />
+            </li>
+          ))}
+          <li class="masonry__item">
+            <div class="masonry__placeholder mono">{pg.gallery.placeholder}</div>
+          </li>
+        </ul>
+      </Lightbox>
+    </div>
+  </section>
+
+  <section class="section section--graphite filming" aria-labelledby="film-title">
+    <div class="container filming__grid">
+      <div class="filming__text" data-reveal>
+        <span class="nameplate">FILM · TV · PHOTO</span>
+        <h2 id="film-title">{pg.filming.title}</h2>
+        <Hairline />
+        <p>{pg.filming.body}</p>
+      </div>
+      <Panel class="filming__spec" data-reveal>
+        <p class="nameplate">{pg.filming.specPlate}</p>
+        <ul role="list" class="mono filming__list">
+          {pg.filming.specs.map((s, i) => <li><span class="filming__n">{String(i + 1).padStart(2, '0')}</span>{s}</li>)}
+        </ul>
+      </Panel>
+    </div>
+  </section>
+
+  <section class="section hood" aria-labelledby="hood-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">THE NEIGHBORHOOD</span>
+        <h2 id="hood-title">{pg.neighborhood.title}</h2>
+      </div>
+      <div class="hood__map" data-reveal><BlockMap size="lg" /></div>
+      <div class="hood__grid">
+        <div class="hood__side">
+          <ul role="list" class="hood__list">
+            {pg.neighborhood.nearby.map((n) => (
+              <li class="knob-row" data-reveal>
+                <Knob size={40} />
+                <span class="hood__name">{n.name}<span class="mono mono--sm hood__detail">{n.detail}</span></span>
+                <span class="mono hood__dist">{n.dist}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mono mono--sm hood__note">{pg.neighborhood.distNote}</p>
+        </div>
+        <div class="hood__aside" data-reveal>
+          <PhotoFrame photoKey={pg.neighborhood.photo} caption="THE WAY IN" ratio="4/3" sizes="(min-width: 1024px) 45vw, 100vw" />
+          <p class="hood__body">{pg.neighborhood.body}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--charcoal getting" aria-labelledby="getting-title">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="nameplate">DIRECTIONS</span>
+        <h2 id="getting-title">{pg.gettingHere.title}</h2>
+      </div>
+      <div class="getting__cols">
+        {pg.gettingHere.columns.map((c) => (
+          <div class="getting__col" data-reveal>
+            <h3 class="mono getting__plate">{c.plate}</h3>
+            <p>{c.body}</p>
+          </div>
+        ))}
+      </div>
+      <Hairline />
+      <div class="getting__addr" data-reveal>
+        <address class="getting__street">{site.address.street}<br /><span>{site.address.between} · New York, NY {site.address.zip}</span></address>
+        <div class="btn-row">
+          <Button href={site.mapsUrl} rel="noopener">GET DIRECTIONS</Button>
+          <Button href={`mailto:${site.email}`} variant="ghost">EMAIL THE STUDIO</Button>
+          <Button href={site.phoneHref} variant="ghost">CALL {site.phone}</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABand title={pg.cta.title} />
+</Base>
+
+<style>
+  .shero { padding-top: calc(var(--nav-h) + var(--logo-hang) + var(--s-12)); padding-bottom: var(--s-6); }
+  .shero__text { display: grid; gap: var(--s-5); justify-items: start; margin-bottom: var(--s-12); }
+  .shero__text h1 { font-size: var(--fs-h1); line-height: 1; max-width: 12ch; }
+  .shero__text .eyebrow + h1 { margin-top: calc(var(--s-3) * -1); } /* eyebrow sits 8px above the headline */
+  .shero__text .lead { max-width: 44rem; }
+  .shero__frame { width: min(100% - 2 * var(--gutter), 96rem); margin-inline: auto; }
+  @media (max-width: 719px) { .shero__frame :global(.pf__window) { aspect-ratio: 4 / 3; } }
+
+  .rooms__grid { display: grid; gap: var(--s-12) var(--s-8); }
+  @media (min-width: 1100px) { .rooms__grid { grid-template-columns: repeat(3, 1fr); } }
+  .rooms :global(.room) { display: grid; grid-template-rows: auto 1fr; height: 100%; padding: var(--s-10) var(--s-4) var(--s-6); }
+  .rooms :global(.room) :global(.pf) { box-shadow: var(--shadow-inset); }
+  .room__plate { position: absolute; top: -0.75rem; left: var(--s-6); z-index: 3; }
+  .room__body { display: grid; gap: var(--s-3); align-content: start; padding: var(--s-6) var(--s-2) 0; }
+  .room__body p:last-child { color: var(--th-parchment); font-size: 1rem; }
+  .room__dims { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); padding: var(--s-2) var(--s-3); background: var(--th-well); border-radius: var(--r-1); box-shadow: inset 0 1px 3px color-mix(in srgb, var(--th-black) 90%, transparent); color: var(--th-parchment); }
+  .room__readout { color: var(--th-amber); text-shadow: 0 0 8px color-mix(in srgb, var(--th-amber) 45%, transparent); }
+
+  .piano :global(.piano__panel) {
+    display: grid;
+    gap: var(--s-10);
+    align-items: center;
+    padding: clamp(1.25rem, 0.75rem + 2vw, 2.5rem);
+  }
+  @media (min-width: 1024px) { .piano :global(.piano__panel) { grid-template-columns: 1fr 1fr; gap: var(--s-12); } }
+  .piano__text { display: grid; gap: var(--s-5); padding: var(--s-4); }
+  .piano__text h2 { font-size: var(--fs-h2-sm); }
+  .piano__text > p { color: var(--th-parchment); }
+  .piano__quote { border-left: 3px solid var(--th-brass); padding-left: var(--s-5); display: grid; gap: var(--s-2); }
+  .piano__quote p { font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); line-height: 1.25; color: var(--th-cream); }
+  .piano__quote footer { color: var(--th-brass); }
+
+  .masonry { columns: 1; column-gap: var(--s-5); }
+  @media (min-width: 640px) { .masonry { columns: 2; } }
+  @media (min-width: 1024px) { .masonry { columns: 3; } }
+  .masonry__item { break-inside: avoid; margin-bottom: var(--s-5); }
+  .masonry__item :global(a.pf__window) { cursor: zoom-in; }
+  .masonry__placeholder {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    border: 1px dashed var(--th-steel);
+    border-radius: var(--r-panel);
+    color: var(--th-parchment);
+    text-align: center;
+    padding: var(--s-6);
+  }
+
+  .filming__grid { display: grid; gap: var(--s-10); align-items: center; }
+  @media (min-width: 1024px) { .filming__grid { grid-template-columns: 1.15fr 1fr; gap: var(--s-16); } }
+  .filming__text { display: grid; gap: var(--s-5); }
+  .filming :global(.filming__spec) { padding: var(--s-10) var(--s-8) var(--s-8); display: grid; gap: var(--s-5); }
+  .filming__list { display: grid; }
+  .filming__list li { display: flex; gap: var(--s-4); padding-block: var(--s-3); border-bottom: 1px solid var(--th-hairline-soft); color: var(--th-cream); }
+  .filming__n { color: var(--th-brass); }
+
+  .hood__map { margin-bottom: var(--s-12); }
+  .hood__grid { display: grid; gap: var(--s-10); }
+  @media (min-width: 1024px) { .hood__grid { grid-template-columns: 1fr 1fr; gap: var(--s-12); } }
+  .hood__aside { display: grid; gap: var(--s-8); align-content: start; }
+  .hood__list { display: grid; }
+  .hood__list li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s-4); padding-block: var(--s-3); border-bottom: 1px solid var(--th-hairline-soft); }
+  .hood__name { display: grid; font-family: var(--font-display); font-weight: var(--fw-display); font-size: 1.1875rem; line-height: 1.25; }
+  .hood__detail { color: var(--th-parchment); margin-top: 0.25rem; }
+  .hood__dist { color: var(--th-amber); padding: 0.25rem 0.5rem; background: var(--th-well); border-radius: var(--r-1); box-shadow: inset 0 1px 3px color-mix(in srgb, var(--th-black) 90%, transparent); white-space: nowrap; }
+  .hood__note { margin-top: var(--s-3); color: var(--th-steel); }
+  .hood__body { font-size: var(--fs-lead); line-height: 1.5; }
+
+  .getting__cols { display: grid; gap: var(--s-8); margin-bottom: var(--s-10); }
+  @media (min-width: 900px) { .getting__cols { grid-template-columns: repeat(3, 1fr); } }
+  .getting__plate { color: var(--th-brass); font-weight: 500; margin-bottom: var(--s-3); }
+  .getting__col p { color: var(--th-parchment); }
+  .getting__addr { display: grid; gap: var(--s-6); margin-top: var(--s-10); }
+  .getting__street { font-style: normal; font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); line-height: 1.1; }
+  .getting__street span { display: block; margin-top: var(--s-2); font-family: var(--font-mono); font-size: var(--fs-mono); letter-spacing: var(--tracking-mono); text-transform: uppercase; color: var(--th-parchment); }
+</style>

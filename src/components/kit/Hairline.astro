@@ -1,0 +1,6 @@
+---
+// 1px steel rule with a 3px brass segment at the left end. Draws left to right on reveal.
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+<div class:list={['hairline', cls]} data-draw aria-hidden="true"></div>

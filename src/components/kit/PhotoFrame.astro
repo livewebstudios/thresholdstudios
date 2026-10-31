@@ -1,0 +1,90 @@
+---
+// A Panel with the photo inset 8px, inner parallax (motion.ts), and a mono caption nameplate bottom-left.
+// ratio="natural" keeps the photo's own shape (masonry gallery) and skips parallax.
+import { Picture } from 'astro:assets';
+import Screws from './Screws.astro';
+import { photo } from '../../data/photos';
+
+interface Props {
+  photoKey: string;
+  caption?: string;
+  ratio?: '16/9' | '4/3' | '3/4' | '1/1' | '21/9' | 'natural';
+  sizes?: string;
+  priority?: boolean;
+  href?: string;
+  class?: string;
+  screws?: boolean;
+  parallax?: boolean;
+  lightbox?: boolean;
+  [key: string]: unknown;
+}
+const {
+  photoKey, caption, ratio = '4/3', sizes = '(min-width: 1024px) 50vw, 100vw', priority = false, href,
+  class: cls = '', screws = false, parallax = true, lightbox = false, ...rest
+} = Astro.props;
+const p = photo(photoKey);
+const ratioClass = ratio === 'natural' ? 'pf--natural' : `pf--r${ratio.replace('/', 'x')}`;
+const widths = [400, 640, 960, 1280, 1600, 2200].filter((w) => p && w <= p.src.width);
+if (p && !widths.includes(p.src.width) && p.src.width < 2200) widths.push(p.src.width);
+const Wrap = href ? 'a' : 'div';
+const doParallax = parallax && ratio !== 'natural';
+---
+{p && (
+  <figure class:list={['pf', ratioClass, cls]} {...rest}>
+    {screws && <Screws />}
+    <Wrap class="pf__window" {...(href ? { href } : {})} {...(lightbox ? { 'data-lightbox': '', 'data-caption': caption } : {})}>
+      <div class="pf__img" {...(doParallax ? { 'data-parallax': '' } : {})}>
+        <Picture
+          src={p.src}
+          alt={p.alt}
+          widths={widths}
+          sizes={sizes}
+          formats={['avif', 'webp']}
+          quality={70}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : 'auto'}
+          decoding={priority ? 'sync' : 'async'}
+        />
+      </div>
+    </Wrap>
+    {caption && <figcaption class="nameplate pf__cap">{caption}</figcaption>}
+  </figure>
+)}
+<style is:global>
+  .pf {
+    position: relative;
+    padding: 8px;
+    background: var(--th-charcoal);
+    border-radius: var(--r-panel);
+    box-shadow: var(--shadow-inset), inset 0 2px 0 var(--th-edge-light), var(--shadow-panel);
+  }
+  .pf__window {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--r-2);
+    background: var(--th-well);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--th-black) 80%, transparent);
+  }
+  .pf--r16x9 .pf__window { aspect-ratio: 16 / 9; }
+  .pf--r21x9 .pf__window { aspect-ratio: 21 / 9; }
+  .pf--r4x3 .pf__window { aspect-ratio: 4 / 3; }
+  .pf--r3x4 .pf__window { aspect-ratio: 3 / 4; }
+  .pf--r1x1 .pf__window { aspect-ratio: 1 / 1; }
+  .pf__img { position: absolute; inset: -8% 0; }
+  .pf--natural .pf__img { position: static; }
+  .pf__img picture, .pf__img img { width: 100%; height: 100%; }
+  .pf__img img { object-fit: cover; transition: filter var(--t-slow) var(--ease); }
+  .pf--natural .pf__img img { height: auto; }
+  .pf__window::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--th-ink) 55%, transparent));
+    pointer-events: none;
+  }
+  .pf__cap { position: absolute; left: 20px; bottom: 20px; z-index: 3; max-width: calc(100% - 40px); white-space: normal; }
+  @media (hover: hover) and (pointer: fine) {
+    .pf:hover .pf__img img { filter: brightness(1.06); }
+  }
+</style>

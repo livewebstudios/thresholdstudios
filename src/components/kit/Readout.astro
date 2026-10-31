@@ -1,0 +1,39 @@
+---
+// Gear-name marquee on a graphite band. 18px/s (duration set by motion.ts from measured width), pauses on hover.
+// Reduced motion: static and wrapping.
+import { readout } from '../../data/site';
+interface Props { items?: readonly string[]; class?: string }
+const { items = readout, class: cls = '' } = Astro.props;
+---
+<div class:list={['readout', cls]} data-readout>
+  <div class="readout__track">
+    <ul class="readout__list mono" role="list" aria-label="Gear in the studio">
+      {items.map((it) => <li>{it}</li>)}
+    </ul>
+    <ul class="readout__list readout__list--dup mono" role="list" aria-hidden="true">
+      {items.map((it) => <li>{it}</li>)}
+    </ul>
+  </div>
+</div>
+<style>
+  .readout {
+    position: relative;
+    overflow: hidden;
+    background: var(--th-graphite);
+    border-block: 1px solid var(--th-hairline-soft);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--th-cream) 4%, transparent), inset 0 -1px 0 color-mix(in srgb, var(--th-black) 50%, transparent);
+    mask-image: linear-gradient(90deg, transparent, var(--th-black) 6%, var(--th-black) 94%, transparent);
+  }
+  .readout__track { display: flex; width: max-content; animation: readout var(--readout-dur, 90s) linear infinite; }
+  .readout:hover .readout__track { animation-play-state: paused; }
+  .readout__list { display: flex; flex: none; margin: 0; padding: 0.75rem 0; color: var(--th-parchment); text-shadow: 0 -1px 0 color-mix(in srgb, var(--th-black) 70%, transparent); }
+  .readout__list li { padding-inline: 1rem; white-space: nowrap; position: relative; }
+  .readout__list li::after { content: '·'; position: absolute; right: -0.25rem; color: var(--th-brass); }
+  @keyframes readout { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .readout { mask-image: none; }
+    .readout__track { animation: none; width: auto; }
+    .readout__list { flex-wrap: wrap; justify-content: center; row-gap: 0.25rem; }
+    .readout__list--dup { display: none; }
+  }
+</style>

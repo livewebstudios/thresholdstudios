@@ -1,0 +1,94 @@
+---
+// Desktop utility line and the sticky nav. ALL CAPS mono links, phone button, scroll fader.
+import Fader from './kit/Fader.astro';
+import LED from './kit/LED.astro';
+import MobileNav from './islands/MobileNav';
+import { site, nav } from '../data/site';
+import { rel } from '../lib/paths';
+interface Props { path: string }
+const { path } = Astro.props;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class="masthead" data-masthead>
+  <div class="utility mono mono--sm" aria-label="Studio address">
+    <div class="container utility__inner">
+      <span>{site.utilityLine} ·</span>
+      <span class="utility__since"><LED /> OPEN SINCE 1997</span>
+    </div>
+  </div>
+  <div class="container masthead__bar">
+    <a class="masthead__logo" href="/" aria-label={`${site.name}, home`}>
+      <img src="/images/logoRGB.png" alt={site.name} width="64" height="64" />
+      <span class="masthead__word mono" aria-hidden="true">THRESHOLD<br /><span>RECORDING STUDIOS NYC</span></span>
+    </a>
+    <nav class="masthead__nav" aria-label="Primary">
+      <ul role="list">
+        {nav.map((n) => (
+          <li><a class="navlink mono" href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+      <a class="btn btn--primary btn--sm" href={site.phoneHref}>CALL {site.phone}</a>
+      <Fader />
+    </nav>
+    <MobileNav client:media="(max-width: 1023px)" links={nav.map((n) => ({ label: n.label, href: rel(path, n.href), current: n.href === '/' ? path === '/' : path.startsWith(n.href) }))} phone={site.phone} phoneHref={site.phoneHref} />
+  </div>
+</header>
+<style is:global>
+  .masthead {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: var(--z-nav);
+    transition: transform var(--t-slow) var(--ease), background-color var(--t-slow) var(--ease), box-shadow var(--t-slow) var(--ease);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--th-ink) 75%, transparent), color-mix(in srgb, var(--th-ink) 0%, transparent));
+  }
+  .masthead.is-solid {
+    background: var(--th-graphite);
+    box-shadow: 0 1px 0 var(--th-hairline), 0 12px 24px -16px color-mix(in srgb, var(--th-black) 90%, transparent);
+  }
+  .masthead.is-hidden { transform: translateY(calc(-100% - var(--logo-hang))); }
+  .utility { color: var(--th-parchment); border-bottom: 1px solid var(--th-hairline-soft); display: none; overflow: hidden; transition: max-height var(--t-slow) var(--ease), opacity var(--t-slow) var(--ease); max-height: 2.25rem; }
+  .masthead.is-solid .utility { max-height: 0; opacity: 0; border-color: transparent; }
+  .utility__inner { display: flex; justify-content: flex-end; align-items: center; gap: var(--s-2); padding-block: 0.5rem; }
+  .utility__since { display: inline-flex; align-items: center; gap: var(--s-2); }
+  .utility .led { width: 7px; height: 7px; }
+  .masthead__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-6); height: var(--nav-h); }
+  .masthead__logo { display: inline-flex; align-items: center; gap: var(--s-3); text-decoration: none; }
+  .masthead__logo img { width: 64px; height: 64px; }
+  .masthead__word { font-size: 0.8125rem; font-weight: 500; line-height: 1.25; letter-spacing: 0.22em; color: var(--th-cream); }
+  .masthead__word span { font-size: 0.625rem; letter-spacing: 0.16em; color: var(--th-parchment); font-weight: 400; }
+  .masthead__nav { display: none; align-items: center; gap: var(--s-6); }
+  .masthead__nav ul { display: flex; gap: var(--s-1); }
+  .navlink {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    color: var(--th-cream);
+    text-decoration: none;
+    transition: color var(--t-base) var(--ease);
+  }
+  .navlink::after {
+    content: '';
+    position: absolute;
+    left: 0.75rem; right: 0.75rem; bottom: 0.25rem;
+    height: 1px;
+    background: var(--th-brass);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--t-slow) var(--ease);
+  }
+  .navlink:hover { color: var(--th-brass-bright); }
+  .navlink:hover::after, .navlink[aria-current='page']::after { transform: scaleX(1); }
+  .navlink[aria-current='page'] { color: var(--th-brass); }
+  @media (min-width: 1024px) {
+    .utility { display: block; }
+    .masthead__nav { display: flex; }
+    /* Logo medallion (Jon, 26_10_30): larger than the bar, hanging below it, so the bar keeps its height. */
+    .masthead__logo { position: relative; align-self: stretch; padding-left: calc(88px + var(--s-4)); }
+    .masthead__logo img { position: absolute; left: 0; top: var(--s-2); width: 88px; height: 88px; filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--th-black) 55%, transparent)); }
+  }
+  @media (max-width: 380px) {
+    .masthead__word { display: none; }
+  }
+</style>
