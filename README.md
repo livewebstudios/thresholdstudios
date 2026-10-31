@@ -117,7 +117,7 @@ The project-root `DECISIONS.md` is the full log. Where it disagrees with the ori
   readout marquee, LEDs and block-map glow, and remembers it for the session. Hidden under reduced
   motion.
 - **Logo and wordmark:** `images/logoRGB.png` centered with the "THRESHOLD / RECORDING STUDIOS NYC"
-  wordmark: 112px in a 128px bar on desktop, 72px in an 80px bar on phones, 136px in the footer.
+  wordmark: 100px in a 116px bar on desktop, 64px in a 72px bar on phones, 120px in the footer.
   The wordmark uses `--font-wordmark`: Arvo Bold standing in for Memphis Bold until a licensed
   Memphis webfont is added (see DECISIONS.md). Keep the wordmark one text block: on phones it is the
   LCP element, and if the logo outgrows it Lighthouse drops to about 90.

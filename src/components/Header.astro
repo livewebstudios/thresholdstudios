@@ -18,7 +18,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   </div>
   <div class="container masthead__bar">
     <a class="masthead__logo" href="/" aria-label={`${site.name}, home`}>
-      <img src="/images/logoRGB.png" alt={site.name} width="112" height="112" />
+      <img src="/images/logoRGB.png" alt={site.name} width="100" height="100" />
       <span class="masthead__word" aria-hidden="true"><span class="masthead__word-1">THRESHOLD</span><br /><span class="masthead__word-2">RECORDING STUDIOS NYC</span></span>
     </a>
     <nav class="masthead__nav" aria-label="Primary">
@@ -53,15 +53,15 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .utility .led { width: 7px; height: 7px; }
   .masthead__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-6); height: var(--nav-h); }
   /* Logo (Jon, 26_10_31): centered on the wordmark inside a bar tall enough to hold it, no overhang. */
-  .masthead__logo { --logo: 72px; display: inline-flex; align-items: center; gap: var(--s-2); text-decoration: none; }
+  .masthead__logo { --logo: 64px; display: inline-flex; align-items: center; gap: var(--s-2); text-decoration: none; }
   /* box-shadow, not filter: drop-shadow inflates the img's paint rect and made the logo the LCP element on phones. */
   .masthead__logo img { flex: none; width: var(--logo); height: var(--logo); border-radius: 50%; box-shadow: 0 6px 14px color-mix(in srgb, var(--th-black) 55%, transparent); }
   /* Wordmark in the logo's slab face (--font-wordmark). One text block on purpose: on phones it has to
-     out-measure the 72px logo or the logo becomes the LCP element (Lighthouse drops to ~90), which sets
+     out-measure the 64px logo or the logo becomes the LCP element (Lighthouse drops to ~90), which sets
      the phone line-height floor at about 1.15. */
   .masthead__word { display: block; white-space: nowrap; font-family: var(--font-wordmark); font-weight: 700; line-height: 1.2; color: var(--th-cream); }
-  .masthead__word-1 { font-size: 1.3125rem; letter-spacing: 0.06em; }
-  .masthead__word-2 { font-size: 0.6875rem; letter-spacing: 0; color: var(--th-parchment); }
+  .masthead__word-1 { font-size: 1.25rem; letter-spacing: 0.06em; }
+  .masthead__word-2 { font-size: 0.625rem; letter-spacing: 0.02em; color: var(--th-parchment); }
   .masthead__nav { display: none; align-items: center; gap: var(--s-6); }
   .masthead__nav ul { display: flex; gap: var(--s-1); }
   .navlink {
@@ -90,10 +90,10 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   @media (min-width: 1024px) {
     .utility { display: block; }
     .masthead__nav { display: flex; }
-    .masthead__logo { --logo: 112px; gap: var(--s-4); }
+    .masthead__logo { --logo: 100px; gap: var(--s-4); }
     .masthead__word { line-height: 1.08; }
-    .masthead__word-1 { font-size: 1.875rem; }
-    .masthead__word-2 { font-size: 0.875rem; letter-spacing: 0.08em; }
+    .masthead__word-1 { font-size: 1.6875rem; }
+    .masthead__word-2 { font-size: 0.8125rem; letter-spacing: 0.06em; }
   }
   @media (max-width: 374px) {
     .masthead__word { display: none; }

@@ -123,9 +123,9 @@
   --z-toast: 80;
   --z-dialog: 90;
 
-  --nav-h: 5rem; /* 72px logo plus 4px each side */
+  --nav-h: 4.5rem; /* 64px logo plus 4px each side */
   --logo-hang: 0rem; /* logo overhang below the bar; 0 since the logo sits centered inside the bar (26_10_31) */
 }
 @media (min-width: 1024px) {
-  :root { --nav-h: 8rem; } /* 112px logo plus 8px each side */
+  :root { --nav-h: 7.25rem; } /* 100px logo plus 8px each side */
 }
